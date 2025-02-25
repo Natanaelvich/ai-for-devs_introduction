@@ -1,0 +1,103 @@
+@baseUrl = http://localhost:5000
+@contentType = application/json
+
+### Variables for different environments
+# @name setEnv
+@prod_url = https://your-production-url
+@dev_url = http://localhost:5000
+
+### Health Check
+GET {{baseUrl}}/api/health
+Accept: application/json
+
+### Train the housing price prediction model
+# @name trainModel
+POST {{baseUrl}}/api/train
+Content-Type: {{contentType}}
+
+{}
+
+### Predict housing price
+# @name predictHousingPrice
+POST {{baseUrl}}/api/predict
+Content-Type: {{contentType}}
+
+{
+    "MedInc": 8.3252,
+    "HouseAge": 41.0,
+    "AveRooms": 6.984127,
+    "AveBedrms": 1.023810,
+    "Population": 322.0,
+    "AveOccup": 2.555556,
+    "Latitude": 37.88,
+    "Longitude": -122.23
+}
+
+### Predict housing price with different values
+# @name predictHousingPrice2
+POST {{baseUrl}}/api/predict
+Content-Type: {{contentType}}
+
+{
+    "MedInc": 5.6431,
+    "HouseAge": 52.0,
+    "AveRooms": 5.817352,
+    "AveBedrms": 1.073171,
+    "Population": 558.0,
+    "AveOccup": 2.560976,
+    "Latitude": 37.85,
+    "Longitude": -122.25
+}
+
+### Test missing feature (should return 400)
+# @name missingFeature
+POST {{baseUrl}}/api/predict
+Content-Type: {{contentType}}
+
+{
+    "MedInc": 8.3252,
+    "HouseAge": 41.0,
+    "AveRooms": 6.984127,
+    "AveBedrms": 1.023810,
+    "Population": 322.0,
+    "AveOccup": 2.555556
+    // Missing Latitude and Longitude
+}
+
+### Query GPT API
+# @name queryGPT
+POST {{baseUrl}}/api/gpt
+Content-Type: {{contentType}}
+
+{
+    "prompt": "Write a haiku about recursion in programming.",
+    "system": "You are a helpful assistant with expertise in computer science and poetry.",
+    "model": "gpt-4o-mini"
+}
+
+### Query GPT API with different prompt
+# @name queryGPT2
+POST {{baseUrl}}/api/gpt
+Content-Type: {{contentType}}
+
+{
+    "prompt": "Explain the concept of linear regression in simple terms."
+}
+
+### Query GPT API with minimal parameters
+# @name queryGPT3
+POST {{baseUrl}}/api/gpt
+Content-Type: {{contentType}}
+
+{
+    "prompt": "What is machine learning?"
+}
+
+### Query GPT API without prompt (should return 400)
+# @name queryGPTError
+POST {{baseUrl}}/api/gpt
+Content-Type: {{contentType}}
+
+{
+    "system": "You are a helpful assistant."
+} 
